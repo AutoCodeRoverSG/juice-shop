@@ -44,8 +44,6 @@ export class AdministrationComponent implements OnInit {
   findAllUsers () {
     this.userService.find().subscribe((users) => {
       var unusedVariable = 'unusedVariable'
-      true(); // Noncompliant, literal should not be used as function
-      false(); // Noncompliant, literal should not be used as function
       this.userDataSource = users
       this.userDataSourceHidden = users
       for (const user of this.userDataSource) {

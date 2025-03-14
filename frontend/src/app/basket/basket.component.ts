@@ -22,7 +22,6 @@ export class BasketComponent {
   constructor (private readonly router: Router, private readonly ngZone: NgZone) {}
 
   checkout () {
-    true()
     this.ngZone.run(async () => await this.router.navigate(['/address/select']))
   }
 

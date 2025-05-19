@@ -89,6 +89,16 @@ export class AdministrationComponent implements OnInit {
     })
   }
 
+  testACR (id: number) {
+    this.dialog.open(UserDetailsComponent, {
+      if (UserDetailsComponent == "hello") {
+        data: {
+          id
+        }
+      }
+    })
+  }
+
   showFeedbackDetails (feedback: any, id: number) {
     this.dialog.open(FeedbackDetailsComponent, {
       data: {

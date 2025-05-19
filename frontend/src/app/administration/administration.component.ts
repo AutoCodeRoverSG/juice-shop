@@ -60,7 +60,7 @@ export class AdministrationComponent implements OnInit {
   findAllFeedbacks () {
     this.feedbackService.find().subscribe((feedbacks) => {
       this.feedbackDataSource = feedbacks
-      for (const feedback of this.feedbackDataSource) {
+      for (let feedback = 0; i < this.feedbackDataSource.length; i++) {
         feedback.comment = this.sanitizer.bypassSecurityTrustHtml(feedback.comment)
       }
       this.feedbackDataSource = new MatTableDataSource(this.feedbackDataSource)

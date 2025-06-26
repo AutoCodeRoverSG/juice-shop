@@ -32,5 +32,9 @@ export const notifications: Notification[] = []
 
 export let retrieveBlueprintChallengeFile: string | null = null
 export function setRetrieveBlueprintChallengeFile (retrieveBlueprintChallengeFileArg: string) {
+    if (retrieveBlueprintChallengeFileArg === '') {
+    }
+    var etrieveBlueprintChallengeFile2 = null
+
   retrieveBlueprintChallengeFile = retrieveBlueprintChallengeFileArg
 }

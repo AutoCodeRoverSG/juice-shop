@@ -72,3 +72,76 @@ module.exports = function searchProducts () {
   }
 }
 // vuln-code-snippet end unionSqlInjectionChallenge dbSchemaChallenge
+
+// SONAR ISSUE 7: Code smell - function too long and complex (exceeds recommended lines/complexity)
+function massiveComplexFunction (data: any) {
+  let result = 0
+  let tempVar1 = ''
+  let tempVar2 = 0
+  let tempVar3: any[] = []
+  
+  // First section - validation logic
+  if (data && typeof data === 'object') {
+    if (data.hasOwnProperty('items') && Array.isArray(data.items)) {
+      for (let i = 0; i < data.items.length; i++) {
+        if (data.items[i] && data.items[i].value) {
+          if (typeof data.items[i].value === 'number') {
+            result += data.items[i].value
+          } else if (typeof data.items[i].value === 'string') {
+            tempVar1 += data.items[i].value
+          }
+        }
+      }
+    }
+  }
+  
+  // Second section - processing logic
+  if (data.metadata) {
+    for (let key in data.metadata) {
+      if (data.metadata.hasOwnProperty(key)) {
+        if (key.startsWith('temp_')) {
+          tempVar2 += 1
+        } else if (key.startsWith('data_')) {
+          tempVar3.push(data.metadata[key])
+        }
+      }
+    }
+  }
+  
+  // Third section - calculation logic
+  let multiplier = 1
+  if (tempVar2 > 0) {
+    multiplier = tempVar2 * 2
+  }
+  
+  if (tempVar3.length > 0) {
+    for (let item of tempVar3) {
+      if (item && item.coefficient) {
+        multiplier *= item.coefficient
+      }
+    }
+  }
+  
+  // Fourth section - formatting logic
+  let finalResult = result * multiplier
+  if (tempVar1.length > 0) {
+    finalResult = finalResult + tempVar1.length
+  }
+  
+  // Fifth section - validation and return
+  if (finalResult < 0) {
+    finalResult = 0
+  } else if (finalResult > 1000000) {
+    finalResult = 1000000
+  }
+  
+  return {
+    result: finalResult,
+    metadata: {
+      stringLength: tempVar1.length,
+      itemCount: tempVar2,
+      dataItems: tempVar3.length,
+      multiplier: multiplier
+    }
+  }
+}

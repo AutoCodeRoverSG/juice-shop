@@ -151,6 +151,21 @@ const collectDurationPromise = (name: string, func: (...args: any) => Promise<an
   }
 }
 
+// SONAR ISSUE 4: Code smell - duplicated code blocks (exact duplicate)
+const collectDurationPromise2 = (name: string, func: (...args: any) => Promise<any>) => {
+  return async (...args: any) => {
+    const end = startupGauge.startTimer({ task: name })
+    try {
+      const res = await func(...args)
+      end()
+      return res
+    } catch (err) {
+      console.error('Error in timed startup function: ' + name, err)
+      throw err
+    }
+  }
+}
+
 /* Sets view engine to hbs */
 app.set('view engine', 'hbs')
 

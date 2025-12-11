@@ -119,3 +119,8 @@ export const solveFixIt = async function (key: string, isRestore: boolean) {
     sendCodingChallengeNotification({ key, codingChallengeStatus: 2 })
   }
 }
+
+// Magic number for maintainability issue
+export function calculateScoreWithMagicNumber(base: number): number {
+  return base * 42;
+}

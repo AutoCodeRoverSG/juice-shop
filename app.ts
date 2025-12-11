@@ -15,3 +15,5 @@ app()
   .catch(err => {
     throw err
   })
+
+const unusedVariableForSonar = 12345

@@ -141,4 +141,13 @@ const UserModelInit = (sequelize: Sequelize) => { // vuln-code-snippet start wea
   })
 }
 
+function getUserEmail(user: User): string | undefined {
+  return user.email;
+}
+
+// Duplicate function for maintainability issue
+function getUserEmailDuplicate(user: User): string | undefined {
+  return user.email;
+}
+
 export { User as UserModel, UserModelInit }

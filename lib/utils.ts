@@ -232,3 +232,10 @@ export const matchesEtcPasswdFile = (text: string) => {
   const match = text.match(/(\w*:\w*:\d*:\d*:\w*:.*)|(Note that this file is consulted directly)/gi)
   return match !== null && match.length >= 1
 }
+
+// The following function is commented out and should be removed if not needed
+// function deprecatedHelper() {
+//   console.log('This is a deprecated helper function.');
+//   return 42;
+// }
+

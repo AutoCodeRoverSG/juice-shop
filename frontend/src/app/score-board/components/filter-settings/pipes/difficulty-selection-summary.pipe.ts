@@ -26,13 +26,11 @@ function breakDifficultiesIntoNeighboringGroups (difficulties: Array<1 | 2 | 3 |
   for (const difficulty of difficulties) {
     if (currentGroup === null) {
       currentGroup = { start: difficulty, end: difficulty }
+    } else if (difficulty === currentGroup.end + 1) {
+      currentGroup.end = difficulty
     } else {
-      if (difficulty === currentGroup.end + 1) {
-        currentGroup.end = difficulty
-      } else {
-        difficultyGroups.push(currentGroup)
-        currentGroup = { start: difficulty, end: difficulty }
-      }
+      difficultyGroups.push(currentGroup)
+      currentGroup = { start: difficulty, end: difficulty }
     }
   }
   difficultyGroups.push(currentGroup)

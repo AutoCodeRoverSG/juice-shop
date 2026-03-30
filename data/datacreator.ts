@@ -375,19 +375,7 @@ async function createProducts () {
           return persistedProduct
         })
           .then(async ({ id }: { id: number }) =>
-            await Promise.all(
-              reviews.map(({ text, author }) =>
-                reviewsCollection.insert({
-                  message: text,
-                  author: datacache.users[author].email,
-                  product: id,
-                  likesCount: 0,
-                  likedBy: []
-                }).catch((err: unknown) => {
-                  logger.error(`Could not insert Product Review ${text}: ${utils.getErrorMessage(err)}`)
-                })
-              )
-            )
+            await insertProductReviews(id, reviews)
           )
     )
   )
@@ -401,6 +389,22 @@ async function createProducts () {
   function customizeRetrieveBlueprintChallenge (hint: string, customProduct: Product) {
     return hint.replace(/OWASP Juice Shop Logo \(3D-printed\)/g, customProduct.name)
   }
+}
+
+async function insertProductReviews (productId: number, reviews: Array<{ text: string, author: string }>) {
+  return await Promise.all(
+    reviews.map(({ text, author }) =>
+      reviewsCollection.insert({
+        message: text,
+        author: datacache.users[author].email,
+        product: productId,
+        likesCount: 0,
+        likedBy: []
+      }).catch((err: unknown) => {
+        logger.error(`Could not insert Product Review ${text}: ${utils.getErrorMessage(err)}`)
+      })
+    )
+  )
 }
 
 async function createBaskets () {

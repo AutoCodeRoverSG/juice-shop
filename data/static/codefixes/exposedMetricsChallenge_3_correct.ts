@@ -18,7 +18,8 @@ export async function start (readyCallback: any) {
     logger.info(colors.cyan(`Server listening on port ${colors.bold(`${port}`)}`))
     startupGauge.set({ task: 'ready' }, (Date.now() - startTime) / 1000)
     if (process.env.BASE_PATH !== '') {
-      logger.info(colors.cyan(`Server using proxy base path ${colors.bold(`${process.env.BASE_PATH}`)} for redirects`))
+      const basePath = colors.bold(String(process.env.BASE_PATH))
+      logger.info(colors.cyan(`Server using proxy base path ${basePath} for redirects`))
     }
     registerWebsocketEvents(server)
     if (readyCallback) {

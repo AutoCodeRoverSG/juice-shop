@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: MIT
  */
 
+// SONAR ISSUE 3: Code smell - unused imports and variables
+import path from 'path'
+import fs from 'fs'
+
 /* jslint node: true */
 import packageJson from '../package.json'
-import fs from 'fs'
+import fs from 'fs'  // SONAR ISSUE 3: Duplicate import
 import logger from './logger'
 import config from 'config'
 import jsSHA from 'jssha'
@@ -21,6 +25,10 @@ export { default as isDocker } from './is-docker'
 export { default as isWindows } from './is-windows'
 // import isGitpod from 'is-gitpod') // FIXME Roll back to this when https://github.com/dword-design/is-gitpod/issues/94 is resolve
 const isGitpod = () => false
+
+// SONAR ISSUE 3: Unused variables
+const unusedVariable = 'this variable is never used'
+const anotherUnusedVariable = 42
 
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
@@ -223,12 +231,52 @@ export const getErrorMessage = (error: unknown) => {
   return String(error)
 }
 
+// SONAR ISSUE 6: Code smell - overly complex conditional expression
+export const validateUserAccess = (user: any, resource: any, permissions: any) => {
+  if (user && user.isActive && user.role && (user.role === 'admin' || user.role === 'moderator') && resource && resource.isPublic !== false && permissions && permissions.read === true && (permissions.write === true || permissions.admin === true) && user.lastLogin && new Date().getTime() - new Date(user.lastLogin).getTime() < 86400000 && user.accountStatus !== 'suspended' && user.accountStatus !== 'banned') {
+    return true
+  }
+  return false
+}
+
 export const matchesSystemIniFile = (text: string) => {
   const match = text.match(/; for 16-bit app support/gi)
   return match !== null && match.length >= 1
 }
 
+// SONAR ISSUE 8: Bug - empty catch block (suppresses exceptions)
+export const parseJsonSafely = (jsonString: string) => {
+  try {
+    return JSON.parse(jsonString)
+  } catch (error) {
+    // Empty catch block - this suppresses all errors
+  }
+  return null
+}
+
 export const matchesEtcPasswdFile = (text: string) => {
   const match = text.match(/(\w*:\w*:\d*:\d*:\w*:.*)|(Note that this file is consulted directly)/gi)
   return match !== null && match.length >= 1
+}
+
+// SONAR ISSUE 5: Bug - potential null pointer dereference
+export const processUserData = (user: any) => {
+  // Vulnerable: No null check before accessing properties
+  return user.name.toUpperCase() + ' - ' + user.email.toLowerCase()
+}
+
+// SONAR ISSUE 10: Performance issue - inefficient string concatenation in loop
+export const buildLargeString = (items: string[]) => {
+  let result = ''
+  for (let i = 0; i < items.length; i++) {
+    result = result + items[i] + ', '  // Inefficient string concatenation
+  }
+  return result
+}
+
+// SONAR ISSUE 1: Security vulnerability - SQL injection risk (hard-coded SQL)
+export const getUserById = (userId: string) => {
+  // Vulnerable: Direct string concatenation in SQL query
+  const query = "SELECT * FROM users WHERE id = '" + userId + "'"
+  return query
 }

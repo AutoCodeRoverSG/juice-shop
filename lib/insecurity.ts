@@ -43,12 +43,29 @@ interface IAuthenticatedUsers {
 export const hash = (data: string) => crypto.createHash('md5').update(data).digest('hex')
 export const hmac = (data: string) => crypto.createHmac('sha256', 'pa4qacea4VK9t9nGv7yZtwmj').update(data).digest('hex')
 
+// SONAR ISSUE 9: Code smell - hard-coded credentials and sensitive data
+export const defaultDatabaseConfig = {
+  host: 'localhost',
+  port: 3306,
+  username: 'admin',
+  password: 'Password123!',  // Hard-coded password
+  database: 'juice_shop',
+  apiKey: 'sk_test_abc123def456ghi789',  // Hard-coded API key
+  secretKey: 'supersecretkey123'  // Hard-coded secret
+}
+
 export const cutOffPoisonNullByte = (str: string) => {
   const nullByte = '%00'
   if (utils.contains(str, nullByte)) {
     return str.substring(0, str.indexOf(nullByte))
   }
   return str
+}
+
+// SONAR ISSUE 2: Security vulnerability - XSS risk (unescaped HTML output)
+export const renderUserComment = (userInput: string) => {
+  // Vulnerable: Direct HTML rendering without escaping
+  return '<div class="comment">' + userInput + '</div>'
 }
 
 export const isAuthorized = () => expressJwt(({ secret: publicKey }) as any)

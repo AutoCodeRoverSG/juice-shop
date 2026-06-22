@@ -13,13 +13,22 @@ import { challenges } from '../data/datacache'
 const security = require('../lib/insecurity')
 
 module.exports = function productReviews () {
-  return (req: Request, res: Response) => {
+  return (req: Request, res: Response, next: (err?: Error) => void) => {
     const user = security.authenticatedUsers.from(req)
-    challengeUtils.solveIf(challenges.forgedReviewChallenge, () => { return user && user.data.email !== req.body.author })
+    const product = req.params?.id
+    const author = req.body?.author
+    const message = req.body?.message
+
+    if (typeof product !== 'string' || typeof author !== 'string' || typeof message !== 'string') {
+      next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))
+      return
+    }
+
+    challengeUtils.solveIf(challenges.forgedReviewChallenge, () => { return user && user.data.email !== author && user.data.email !== product })
     reviewsCollection.insert({
-      product: req.params.id,
-      message: req.body.message,
-      author: req.body.author,
+      product,
+      message,
+      author,
       likesCount: 0,
       likedBy: []
     }).then(() => {

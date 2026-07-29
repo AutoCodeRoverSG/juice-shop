@@ -16,8 +16,8 @@ module.exports = function performRedirect () {
     if (security.isRedirectAllowed(toUrl)) {
       challengeUtils.solveIf(challenges.redirectCryptoCurrencyChallenge, () => { return toUrl === 'https://explorer.dash.org/address/Xr556RzuwX6hg5EGpkybbv5RanJoZN17kW' || toUrl === 'https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm' || toUrl === 'https://etherscan.io/address/0x0f933ab9fcaaa782d0279c300d73750e1311eae6' })
       challengeUtils.solveIf(challenges.redirectChallenge, () => { return isUnintendedRedirect(toUrl) })
-      const safeUrl = sanitizeRedirectUrl(toUrl)
-      res.redirect(safeUrl)
+      const redirectTarget = getAllowedRedirectTarget(toUrl)
+      res.redirect(redirectTarget)
     } else {
       res.status(406)
       next(new Error('Unrecognized target URL for redirect: ' + toUrl))
@@ -25,14 +25,14 @@ module.exports = function performRedirect () {
   }
 }
 
-function sanitizeRedirectUrl (url: string): string {
-  try {
-    const parsed = new URL(url)
-    return parsed.href
-  } catch {
-    const parsed = new URL(url, 'http://localhost')
-    return parsed.pathname + parsed.search + parsed.hash
+function getAllowedRedirectTarget (url: string): string {
+  for (const allowedUrl of security.redirectAllowlist) {
+    if (url === allowedUrl) {
+      return allowedUrl
+    }
   }
+
+  return '/'
 }
 
 function isUnintendedRedirect (toUrl: string) {

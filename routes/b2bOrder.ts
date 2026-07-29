@@ -3,23 +3,19 @@
  * SPDX-License-Identifier: MIT
  */
 
-import vm = require('vm')
 import { type Request, type Response, type NextFunction } from 'express'
 import challengeUtils = require('../lib/challengeUtils')
 
 import * as utils from '../lib/utils'
 import { challenges } from '../data/datacache'
 const security = require('../lib/insecurity')
-const safeEval = require('notevil')
 
 module.exports = function b2bOrder () {
   return ({ body }: Request, res: Response, next: NextFunction) => {
     if (utils.isChallengeEnabled(challenges.rceChallenge) || utils.isChallengeEnabled(challenges.rceOccupyChallenge)) {
       const orderLinesData = body.orderLinesData || ''
       try {
-        const sandbox = { safeEval, orderLinesData }
-        vm.createContext(sandbox)
-        vm.runInContext('safeEval(orderLinesData)', sandbox, { timeout: 2000 })
+        JSON.parse(orderLinesData)
         res.json({ cid: body.cid, orderNo: uniqueOrderNumber(), paymentDue: dateTwoWeeksFromNow() })
       } catch (err) {
         if (utils.getErrorMessage(err).match(/Script execution timed out.*/) != null) {
